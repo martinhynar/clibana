@@ -1,4 +1,8 @@
 language: clojure
+before_install:
+  - sudo apt-get update -y
+install:
+  - sudo apt-get install -y nodejs
 lein: lein2
 script: "lein2 test-all"
 jdk:
