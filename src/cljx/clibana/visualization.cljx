@@ -12,6 +12,14 @@
 ;;; SEARCH
 (defn with-saved-search [id] {:saved-search id})
 
+(defn with-search [& options]
+  {:search (let [options (apply hash-map options)]
+             {:index  (:index options)
+              :query  {:query_string {:query (:query options)}}
+              :filter (get options :filter [])})})
+
+
+
 
 ;;; AGGREGATIONS
 
@@ -119,3 +127,17 @@
                                                  #+cljs (json/serialize (clj->js search))
                                                  search)}
      }))
+
+
+(comment
+  (defn example-visualization []
+    (visualization "An Example"
+                   (with-options :encode-json? false)
+                   (with-histogram
+                     (with-parameter :mode :stacked)
+                     (with-parameter :spyPerPage 10)
+                     (with-aggregation :max "metric")
+                     (with-aggregation :date-histogram "@timestamp")
+                     (with-aggregation :terms "service"))
+                   (with-search :index "build-*" :query "service : \"cpu#1 user\"" :filter []))
+    ))
