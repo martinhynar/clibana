@@ -1,5 +1,5 @@
 (defproject
-  clibana "0.1.0"
+  clibana "0.1.0-SNAPSHOT"
 
   :description "A Clojure based generator for Kibana 4 objects."
 
@@ -13,6 +13,7 @@
 
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/data.json "0.2.5"]
+                 [com.cemerick/url "0.1.1"]
                  [org.clojure/clojurescript "0.0-2755"]]
 
   :plugins [[com.keminglabs/cljx "0.6.0"]
@@ -48,11 +49,13 @@
               :test-commands {"unit-tests" ["node" :node-runner
                                             "target/cljs/clibana.js"]}}
 
-  :aot :all
+
   :profiles {
              :dev {
                    :aliases {"once"     ["do" "cljx" "once," "cljsbuild" "once"]
                              "auto"     ["pdo" "cljx" "auto," "cljsbuild" "auto"]
                              "test-all" ["do" "with-profile" "test" "clean," "test," "cljsbuild" "test"]
                              }
-                   }})
+                   }
+             :jar {:aot :all}
+             })

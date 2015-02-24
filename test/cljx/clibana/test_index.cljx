@@ -4,7 +4,6 @@
   #+cljs (:require-macros [cemerick.cljs.test :refer (is deftest)])
   #+cljs (:require [cemerick.cljs.test :as t]
            [clibana.index :as ci])
-
   )
 
 
