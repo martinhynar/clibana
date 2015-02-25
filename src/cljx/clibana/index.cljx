@@ -20,3 +20,8 @@
     #+cljs (json/serialize (clj->js {}))
     })
   )
+
+
+(comment
+  (index-pattern "pattern" "timefield")
+  )

@@ -19,7 +19,8 @@
   :plugins [[com.keminglabs/cljx "0.6.0"]
             [lein-cljsbuild "1.0.5"]
             [com.cemerick/clojurescript.test "0.3.3"]
-            [lein-pdo "0.1.1"]]
+            [lein-pdo "0.1.1"]
+            [codox "0.8.10"]]
 
   :jar-exclusions [#"\.cljx|\.svn|\.swp|\.swo|\.DS_Store"]
 
@@ -55,7 +56,9 @@
                    :aliases {"once"     ["do" "cljx" "once," "cljsbuild" "once"]
                              "auto"     ["pdo" "cljx" "auto," "cljsbuild" "auto"]
                              "test-all" ["do" "with-profile" "test" "clean," "test," "cljsbuild" "test"]
+                             "local-site" ["do" "with-profile" "site" "doc"]
                              }
                    }
              :jar {:aot :all}
+             :site {:codox {:output-dir "../clibana-gh-pages/api" :exclude [clibana.internal.common]}}
              })

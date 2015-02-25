@@ -11,66 +11,23 @@
 
 
 (deftest with-parameter-creates-map
-  (is (= (v/with-parameter :mode "stacked")
+  (is (= (v/chart-with-parameter :mode "stacked")
          {:param {:mode "stacked"}})))
-
-(deftest about-param?
-  (testing "no parameter"
-    (is (nil? (v/param? [{:invalid :whatever}]))))
-  (testing "single parameter"
-    (is (= (v/param? [{:param {:p1 1}}])
-           {:p1 1})))
-  (testing "multiple parameters"
-    (is (= (v/param? [{:param {:p1 1}} {:param {:p2 2}}])
-           {:p1 1 :p2 2})))
-  (testing "parameter mixed with something else"
-    (is (= (v/param? [{:param {:p1 1}} {:whatever :whatever}])
-           {:p1 1})))
-  (testing "same parameter twice with different value - latest wins"
-    (is (= (v/param? [{:param {:p1 1}} {:param {:p1 2}}])
-           {:p1 2}))))
-
-
-(deftest about-aggregation?
-  (testing "single aggregation"
-    (is (= (v/aggregation? [{:aggregation {:a1 1}}])
-           [{:a1 1}])))
-
-  (testing "multiple aggregations"
-    (is (= (v/aggregation? [{:aggregation {:a1 1}} {:aggregation {:a2 2}}])
-           [{:a1 1} {:a2 2}])))
-
-  (testing "aggregation mixed with something else"
-    (is (= (v/aggregation? [{:aggregation {:a1 1}} {:whatever :whatever}])
-           [{:a1 1}])))
-
-  )
-
-
-(deftest about-visualization?
-  (testing "single visualization"
-    (is (= (v/visualization? [{:visualization {:v1 1}}])
-           {:v1 1})))
-
-  (testing "multiple visualization - first wins"
-    (is (= (v/visualization? [{:visualization {:v1 1}} {:visualization {:v2 2}}])
-           {:v1 1}))))
-
 
 (deftest about-invalid-aggregation
   (testing "invalid aggregation"
-    (is (nil? (v/with-aggregation :invalid)))))
+    (is (nil? (v/chart-with-aggregation :invalid)))))
 
 
 
 (deftest about-date-histogram-aggregation
   (testing "about max aggregation"
-    (is (= (v/with-aggregation :max "metric")
+    (is (= (v/chart-with-aggregation :max "metric")
            {:aggregation {:type "max" :schema "metric" :params {:field "metric"}}}))))
 
 (deftest about-date-histogram-aggregation
   (testing "date histogramvia dispatch, use defaults"
-    (is (= (v/with-aggregation :date-histogram "timestamp")
+    (is (= (v/chart-with-aggregation :date-histogram "timestamp")
            {:aggregation {:type   "date_histogram"
                           :schema "segment"
                           :params {:field           "timestamp"
@@ -81,16 +38,16 @@
   )
 
 (deftest terms-via-dispatch-use-defaults
-  (is (= (v/with-aggregation :terms "service")
+  (is (= (v/chart-with-aggregation :terms "service")
          {:aggregation {:type "terms" :schema "group" :params {:field   "service"
-                                                              :size    10
-                                                              :order   "desc"
-                                                              :orderBy "1"
-                                                              }}}))
+                                                               :size    10
+                                                               :order   "desc"
+                                                               :orderBy "1"
+                                                               }}}))
   )
 
 (deftest terms-via-dispatch-bottom-15
-  (is (= (v/with-aggregation :terms "service" :order :asc :size 15)
+  (is (= (v/chart-with-aggregation :terms "service" :order :asc :size 15)
          {:aggregation {:type "terms" :schema "group" :params {:field   "service"
                                                                :size    15
                                                                :order   "asc"
@@ -98,15 +55,98 @@
                                                                }}}))
   )
 
-(deftest about-with-histogram
+(deftest about-with-bar-chart
   (testing "histogram with single parameter"
-    (is (= (v/with-histogram
-             (v/with-parameter :mode "percentage")
-             (v/with-aggregation :max "metric"))
-           {:visualization {:type "histogram" :params {:addLegend       true
-                                                       :addTooltip      true
-                                                       :defaultYExtents false
-                                                       :mode            "percentage"
-                                                       :shareYAxis      true}
-                            :aggs [{:id "1" :type "max" :schema "metric" :params {:field "metric"}}] :listeners {}}})))
+    (is (=
+          {:visualization {:type      "histogram"
+                           :listeners {}
+                           :params    {:addLegend       true
+                                       :addTooltip      true
+                                       :defaultYExtents false
+                                       :mode            "percentage"
+                                       :shareYAxis      true}
+                           :aggs      [{:id "1" :type "max" :schema "metric" :params {:field "metric"}}]
+                           }}
+          (v/with-bar-chart
+            (v/chart-with-parameter :mode :percentage)
+            (v/chart-with-aggregation :max "metric")))))
+  )
+
+(deftest about-with-area-chart
+  (testing "area with single parameter"
+    (is (=
+          {:visualization {:type      "area"
+                           :listeners {}
+                           :params    {:addLegend       true
+                                       :addTooltip      true
+                                       :defaultYExtents false
+                                       :mode            "percentage"
+                                       :shareYAxis      true}
+                           :aggs      [{:id "1" :type "max" :schema "metric" :params {:field "metric"}}]
+                           }}
+          (v/with-area-chart
+            (v/chart-with-parameter :mode :percentage)
+            (v/chart-with-aggregation :max "metric")))))
+  )
+
+(deftest about-with-pie-chart
+  (testing "pie with single parameter"
+    (is (=
+          {:visualization {:type      "pie"
+                           :listeners {}
+                           :params    {:addLegend  true
+                                       :addTooltip true
+                                       :isDonut    true
+                                       :shareYAxis true}
+                           :aggs      [{:id "1" :type "max" :schema "metric" :params {:field "metric"}}]
+
+                           }}
+          (v/with-pie-chart
+            (v/chart-with-parameter :isDonut true)
+            (v/chart-with-aggregation :max "metric")))))
+  )
+
+(deftest about-with-metric-chart
+  (testing "metric with single parameter"
+    (is (=
+          {:visualization {:type      "metric"
+                           :listeners {}
+                           :params    {:fontSize 80}
+                           :aggs      [{:id "1" :type "max" :schema "metric" :params {:field "metric"}}]}}
+          (v/with-metric-chart
+            (v/chart-with-parameter :fontSize 80)
+            (v/chart-with-aggregation :max "metric")))))
+  )
+
+(deftest about-with-data-table
+  (testing "data table with single parameter"
+    (is (=
+          {:visualization {:type      "table"
+                           :listeners {}
+                           :params    {:perPage               20
+                                       :showPartialRows       false
+                                       :showMeticsAtAllLevels false}
+                           :aggs      [{:id "1" :type "max" :schema "metric" :params {:field "metric"}}]}}
+          (v/with-data-table
+            (v/chart-with-parameter :perPage 20)
+            (v/chart-with-aggregation :max "metric")))))
+  )
+
+(deftest about-with-markdown
+  (testing "markdown with text"
+    (is (=
+          {:visualization {:type      "markdown"
+                           :listeners {}
+                           :params    {:markdown "A text to display"}
+                           :aggs      []}}
+          (v/with-markdown
+            (v/chart-with-parameter :markdown "A text to display")
+            ))))
+  (testing "markdown with no content"
+    (is (=
+          {:visualization {:type      "markdown"
+                           :listeners {}
+                           :params    {:markdown ""}
+                           :aggs      []}}
+          (v/with-markdown))))
   )

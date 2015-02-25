@@ -7,8 +7,9 @@
   )
 
 ;; DESCRIPTION
-(def with-description c/with-description)
-
+(defn with-description
+  "Give your search some human readable description."
+  [description] (c/with-description description))
 
 ;;; COLUMNS
 (defn with-columns [col & cols] {:columns (apply vector col cols)})
@@ -26,8 +27,8 @@
 (defn search
   "Construct document describing saved search"
   [title & decorations]
-  (let [description (c/description? decorations)
-        options (c/options? decorations)
+  (let [description (c/<-description decorations)
+        options (c/<-options decorations)
         columns (columns? decorations)
         sort (sort? decorations)
         search (:search (search? decorations))

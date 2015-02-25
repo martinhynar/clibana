@@ -1,23 +1,44 @@
 (ns clibana.internal.common)
 
 
-(defn is-description? [decoration] (:description decoration))
 
-(defn is-options? [decoration] (:options decoration))
+(defn take-first
+  "
+ From collection of maps, takes all that rhave given key, selects first and returns its value.
+ E.g. (<-saved-search [{:saved-search 1} {:saved-search 2}]) -> 1
+ "
+  ([kw coll default] (get (first (filter kw coll)) kw default))
+  ([kw coll] (-> (filter kw coll) first kw)))
+
+
+(defn <-description [decorations] (take-first :description decorations ""))
+
+(defn <-options [decorations] (:options (apply merge (filter :options decorations))))
+
+(defn <-visualization [decorations] (take-first :visualization decorations))
+
+(defn <-search [decorations] (take-first :search decorations))
+
+(defn <-saved-search [decorations] (take-first :saved-search decorations))
+
+(defn <-param [decorations] (apply merge (map :param (filter :param decorations))))
+(defn <-paramZ [decorations] (apply merge (map :param (filter :param decorations))))
+
+;; TODO I don't know yet what are listeners for
+;(defn <-listener [decorations] (filter :listener decorations))
+(defn <-listener [decorations] {})
+
+(defn <-aggregation [decorations] (remove nil? (map :aggregation decorations)))
 
 
 
+;; Common with-* decorators
 (defn with-description [description] {:description description})
 
 (defn with-options [& options] {:options (apply hash-map options)})
 
-(defn description? [decorations] (get (apply merge (filter is-description? decorations)) :description ""))
 
-(defn options? [decorations] (:options (apply merge (filter is-options? decorations))))
 
 (defn gen-ids
   ([] (gen-ids 1))
   ([n] (cons n (lazy-seq (gen-ids (inc n))))))
-
-
-(defn take-first [kw coll] (-> (filter kw coll) first kw))

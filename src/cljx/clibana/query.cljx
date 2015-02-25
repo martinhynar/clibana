@@ -15,7 +15,7 @@
 
 (defn query "Construct a search query"
   [index & decorations]
-  (let [options (c/options? decorations)
+  (let [options (c/<-options decorations)
         query (:query (query? decorations))
         ]
     {:search {:index  index

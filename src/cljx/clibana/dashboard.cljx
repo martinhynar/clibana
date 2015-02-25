@@ -6,6 +6,17 @@
     ))
 
 
+;; OPTIONS
+(defn with-options
+  "Specify sequence of options to drive shape of the result document."
+  [& options] (c/with-options options))
+
+;; DESCRIPTION
+(defn with-description
+  "Give your dashboard some human readable description."
+  [description] (c/with-description description))
+
+
 (defn with-position-and-size [col row width height] {:col col :row row :size_x width :size_y height})
 
 (defn with-position [col row] {:col col :row row})
@@ -36,8 +47,8 @@
 
 (defn dashboard
   ([title & decorations]
-   (let [description (c/description? decorations)
-         options (c/options? decorations)
+   (let [description (c/<-description decorations)
+         options (c/<-options decorations)
          panels (filter map? (map is-panel? decorations))
          ]
      {:title       title
@@ -54,14 +65,15 @@
 
 
 
-(defn example-dashboard []
-  (dashboard "Dashboard"
-             (c/with-description "Description")
-             (c/with-options :encode-json? false)
-             (with-visualization "Visualization A" (half-screen-wide))
-             (with-visualization "Visualization C" (half-screen-wide))
-             (with-visualization "Visualization B" (half-screen-wide)))
-  )
+(comment
+  (defn example-dashboard []
+    (dashboard "Dashboard"
+               (with-description "Description")
+               (with-options :encode-json? false)
+               (with-visualization "Visualization A" (half-screen-wide))
+               (with-visualization "Visualization C" (half-screen-wide))
+               (with-visualization "Visualization B" (half-screen-wide)))
+    ))
 
 
 
