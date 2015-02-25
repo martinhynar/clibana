@@ -3,11 +3,16 @@ published: true
 ---
 <!DOCTYPE html>
 <html>
-  {% include head.html %}
-  <body>
-    <div class="container">
-      {% include header.html %}
-      <h2>Visualization</h2>
-    </div>
-  </body>
+{% include head.html %}
+<body>
+<div class="container">
+    {% include header.html %}
+    <h2>Visualization</h2>
+
+    {% highlight clojure %}
+    {% include sample/src/clibana/sample/visualization_histogram.clj %}
+    {% endhighlight %}
+
+</div>
+</body>
 </html>
