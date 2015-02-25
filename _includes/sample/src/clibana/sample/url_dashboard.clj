@@ -1,6 +1,5 @@
 (ns clibana.sample.url-dashboard
-  (:require [clibana.visualization :as cv]
-            [clibana.url :as cu]))
+  (:require [clibana.url :as cu]))
 
 ;; Link to the dashboard
 (cu/dashboard-url
