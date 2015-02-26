@@ -23,11 +23,11 @@
 
 (defn with-search
   "Use in-place created search."
-  [& options]
-  {:search (let [options (apply hash-map options)]
-             {:index  (:index options)
-              :query  {:query_string {:query (:query options)}}
-              :filter (get options :filter [])})})
+  [index & decorations]
+  (let [query (c/<-query decorations)]
+    {:search {:index  index
+              :query  {:query_string {:query query}}
+              :filter (get decorations :filter [])}}))
 
 
 
@@ -147,7 +147,7 @@
                    (chart-with-aggregation :max "metric")
                    (chart-with-aggregation :date-histogram "@timestamp")
                    (chart-with-aggregation :terms "service"))
-                 (with-search :index "build-*" :query "service : \"cpu#1 user\"" :filter []))
+                 (with-search "build-*" {:query "service : \"cpu#1 user\""}))
 
   ;; With saved search
   (visualization "An Example"

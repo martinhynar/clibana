@@ -22,7 +22,11 @@
 (defn <-saved-search [decorations] (take-first :saved-search decorations))
 
 (defn <-param [decorations] (apply merge (map :param (filter :param decorations))))
-(defn <-paramZ [decorations] (apply merge (map :param (filter :param decorations))))
+
+(defn <-query [decorations] (take-first :query decorations))
+
+(defn <-filter [decorations] (take-first :filter decorations))
+
 
 ;; TODO I don't know yet what are listeners for
 ;(defn <-listener [decorations] (filter :listener decorations))

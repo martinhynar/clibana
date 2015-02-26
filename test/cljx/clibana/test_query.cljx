@@ -7,40 +7,30 @@
   )
 
 
-(deftest about-search
+(deftest about-with-term
   (testing "single term"
-    (is (= (q/query "index-*"
-                    (q/with-term "field" "term"))
-           {:search {:index  "index-*"
-                     :filter []
-                     :query  "field : term"}})))
-  (testing "single string"
-    (is (= (q/query "index-*"
-                    (q/with-string "field" "term"))
-           {:search {:index  "index-*"
-                     :filter []
-                     :query  "field : \"term\""}})))
+    (is (= (q/with-term "field" "term")
+           {:query "field : term"})))
   (testing "terms"
-    (is (= (q/query "index-*"
-                    (q/with-terms "field" ["termA" "termB"]))
-           {:search {:index  "index-*"
-                     :filter []
-                     :query  "field : (termA termB)"}})))
-  (testing "strings"
-    (is (= (q/query "index-*"
-                    (q/with-strings "field" ["termA" "termB"]))
-           {:search {:index  "index-*"
-                     :filter []
-                     :query  "field : (\"termA\" \"termB\")"}})))
+    (is (= (q/with-terms "field" ["termA" "termB"])
+           {:query "field : (termA termB)"})))
   )
 
-;
-;(testing "about search"
-;       (testing "search with no filter"
-;             (let [index "build-123" query "service : cpu#1 steal"]
-;               (q/with-search :index index :query query) => {:search {:index  index
-;                                                                      :query  {:query_string {:query query}}
-;                                                                      :filter []}})
-;             )
-;       )
-;
+(deftest about-with-string
+  (testing "single string"
+    (is (= (q/with-string "field" "term")
+           {:query "field : \"term\""})))
+  (testing "strings"
+    (is (= (q/with-strings "field" ["termA" "termB"])
+           {:query "field : (\"termA\" \"termB\")"})))
+  )
+
+(deftest about-with-and
+  (testing "2 queries"
+    (is (= {:query "Q1 AND Q2"}
+           (q/with-and "Q1" "Q2"))))
+  (testing "more queries"
+    (is (= {:query "Q1 AND Q2 AND Q3 AND Q4"}
+           (q/with-and "Q1" "Q2" "Q3" "Q4"))))
+  )
+

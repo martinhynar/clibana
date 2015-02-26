@@ -10,6 +10,13 @@
   )
 
 
+(deftest with-search
+  (testing "no filter"
+    (is (= {:search {:index  "an-index"
+                     :query  {:query_string {:query "this is query"}}
+                     :filter []}}
+           (v/with-search "an-index" {:query "this is query"})))))
+
 (deftest with-parameter-creates-map
   (is (= (v/chart-with-parameter :mode "stacked")
          {:param {:mode "stacked"}})))

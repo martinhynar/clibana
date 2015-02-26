@@ -3,8 +3,6 @@
     [clibana.internal.common :as c]))
 
 
-(defn query? [decorations] (first (filter :query decorations)))
-
 
 (defn with-term [field term] {:query (str field " : " term)})
 (defn with-string [field term] {:query (str field " : \"" term "\"")})
@@ -13,15 +11,5 @@
 (defn with-strings [field terms] {:query (str field " : (" (reduce str (interpose " " (map #(str "\"" % "\"") terms))) ")")})
 
 
-(defn query "Construct a search query"
-  [index & decorations]
-  (let [options (c/<-options decorations)
-        query (:query (query? decorations))
-        ]
-    {:search {:index  index
-              :filter []
-              :query  query
-              }}))
-
-
-
+(defn with-and [query1 query2 & queries]
+  {:query (apply str (interpose " AND " (into [query1 query2] queries)))})
