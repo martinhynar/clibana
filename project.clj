@@ -52,13 +52,13 @@
 
 
   :profiles {
-             :dev {
-                   :aliases {"once"     ["do" "cljx" "once," "cljsbuild" "once"]
-                             "auto"     ["pdo" "cljx" "auto," "cljsbuild" "auto"]
-                             "test-all" ["do" "with-profile" "test" "clean," "test," "cljsbuild" "test"]
-                             "local-site" ["do" "with-profile" "site" "doc"]
-                             }
-                   }
-             :jar {:aot :all}
+             :dev  {
+                    :aliases {"once"       ["do" "cljx" "once," "cljsbuild" "once"]
+                              "auto"       ["pdo" "cljx" "auto," "cljsbuild" "auto"]
+                              "test-all"   ["with-profile" "test" "do" "clean," "cljx" "once," "cljsbuild" "test," "test"]
+                              "local-site" ["do" "with-profile" "site" "doc"]
+                              }
+                    }
+             :jar  {:aot :all}
              :site {:codox {:output-dir "../clibana-gh-pages/api" :exclude [clibana.internal.common]}}
              })

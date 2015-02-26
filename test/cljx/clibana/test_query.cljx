@@ -34,3 +34,51 @@
            (q/with-and "Q1" "Q2" "Q3" "Q4"))))
   )
 
+(deftest about-with-or
+  (testing "2 queries"
+    (is (= {:query "Q1 OR Q2"}
+           (q/with-or "Q1" "Q2"))))
+  (testing "more queries"
+    (is (= {:query "Q1 OR Q2 OR Q3 OR Q4"}
+           (q/with-or "Q1" "Q2" "Q3" "Q4"))))
+  )
+
+(deftest about-with-number-range
+  (testing "non number"
+    (is (nil? (q/with-number-range "field" :inclusive "s" :inclusive "s"))))
+  (testing "lower higher"
+    (is (= {:query "field : [5 TO 6]"}
+           (q/with-number-range "field" :inclusive 5 :inclusive 6))))
+  (testing "higher lower"
+    (is (= {:query "field : [5 TO 6]"}
+           (q/with-number-range "field" :inclusive 6 :inclusive 5))))
+  (testing "equal"
+    (is (= {:query "field : [5 TO 5]"}
+           (q/with-number-range "field" :inclusive 5 :inclusive 5))))
+  (testing "equal exclusive"
+    (is (= {:query "field : {5 TO 5}"}
+           (q/with-number-range "field" :exclusive 5 :exclusive 5))))
+  )
+
+(deftest about-with-date-range
+  (testing "first non date"
+    (is (nil? (q/with-date-range "field" :inclusive "non date" :inclusive "2015-12-12T12:12:12-03:00"))))
+  (testing "second non date"
+    (is (nil? (q/with-date-range "field" :inclusive "2015-12-12T12:12:12-03:00" :inclusive "non date"))))
+
+  (testing "increasing order with T exclusive"
+    (is (= {:query "field : {\"2015-12-12T12:12:12-03:00\" TO \"2015-12-12T12:12:12+03:00\"}"}
+           (q/with-date-range "field" :exclusive "2015-12-12T12:12:12-03:00" :exclusive "2015-12-12T12:12:12+03:00"))))
+
+  (testing "increasing order with T"
+    (is (= {:query "field : [\"2015-12-12T12:12:12-03:00\" TO \"2015-12-12T12:12:12+03:00\"]"}
+           (q/with-date-range "field" :inclusive "2015-12-12T12:12:12-03:00" :inclusive "2015-12-12T12:12:12+03:00"))))
+  (testing "increasing order with space"
+    (is (= {:query "field : [\"2015-12-12 12:12:12-03:00\" TO \"2015-12-12 12:12:12+03:00\"]"}
+           (q/with-date-range "field" :inclusive "2015-12-12 12:12:12-03:00" :inclusive "2015-12-12 12:12:12+03:00"))))
+  (testing "increasing order mixed"
+    (is (= {:query "field : [\"2015-12-12T12:12:12-03:00\" TO \"2015-12-12 12:12:12+03:00\"]"}
+           (q/with-date-range "field" :inclusive "2015-12-12T12:12:12-03:00" :inclusive "2015-12-12 12:12:12+03:00"))))
+
+  )
+
