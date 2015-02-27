@@ -50,20 +50,31 @@
            {:p1 2}))))
 
 
-(deftest about-aggregation
+(deftest about-aggregation-x
   (testing "single aggregation"
-    (is (= (c/<-aggregation [{:aggregation {:a1 1}}])
-           [{:a1 1}])))
+    (is (= [{:a1 1}]
+           (c/<-aggregation-x [{:aggregation-x {:a1 1}}]))))
 
   (testing "multiple aggregations"
-    (is (= (c/<-aggregation [{:aggregation {:a1 1}} {:aggregation {:a2 2}}])
-           [{:a1 1} {:a2 2}])))
+    (is (= [{:a1 1} {:a2 2}]
+           (c/<-aggregation-x [{:aggregation-x {:a1 1}} {:aggregation-x {:a2 2}}]))))
 
   (testing "aggregation mixed with something else"
-    (is (= (c/<-aggregation [{:aggregation {:a1 1}} {:whatever :whatever}])
-           [{:a1 1}])))
+    (is (= [{:a1 1}]
+           (c/<-aggregation-x [{:aggregation-x {:a1 1}} {:whatever :whatever}])))))
 
-  )
+(deftest about-aggregation-y
+  (testing "single aggregation"
+    (is (= [{:a1 1}]
+           (c/<-aggregation-y [{:aggregation-y {:a1 1}}]))))
+
+  (testing "multiple aggregations"
+    (is (= [{:a1 1} {:a2 2}]
+           (c/<-aggregation-y [{:aggregation-y {:a1 1}} {:aggregation-y {:a2 2}}]))))
+
+  (testing "aggregation mixed with something else"
+    (is (= [{:a1 1}]
+           (c/<-aggregation-y [{:aggregation-y {:a1 1}} {:whatever :whatever}])))))
 
 
 (deftest about-visualization

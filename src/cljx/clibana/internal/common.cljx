@@ -32,8 +32,9 @@
 ;(defn <-listener [decorations] (filter :listener decorations))
 (defn <-listener [decorations] {})
 
-(defn <-aggregation [decorations] (remove nil? (map :aggregation decorations)))
+(defn <-aggregation-x [decorations] (remove nil? (map :aggregation-x decorations)))
 
+(defn <-aggregation-y [decorations] (remove nil? (map :aggregation-y decorations)))
 
 
 ;; Common with-* decorators

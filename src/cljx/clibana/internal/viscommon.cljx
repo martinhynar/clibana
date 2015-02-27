@@ -16,8 +16,24 @@
   (let [options (c/<-options decorations)
         params (resolve-params default-params chart-params (c/<-param decorations))
         listeners (c/<-listener decorations)
-        aggregations (c/<-aggregation decorations)
-        aggregations (mapv (fn [i a] (assoc a :id (str i))) (c/gen-ids) aggregations)
+        aggregations-x (c/<-aggregation-x decorations)
+        aggregations-y (c/<-aggregation-y decorations)
+        aggregations (concat aggregations-y aggregations-x)
+        id-mappings (atom {})
+        ;; build ID mapping and assign generated id's
+        aggregations (mapv (fn [i a]
+                             ;; When there is :id assigned, take it and put it to id-mapping
+                             (when-let [aid (:id a)] (swap! id-mappings assoc aid (str i)))
+                             ;; Assign or replace :id with generated one
+                             (assoc a :id (str i))) (c/gen-ids) aggregations)
+        ;; Replace references
+        aggregations (mapv (fn [a]
+                             (cond
+                               (keyword? (get-in a [:params :orderBy])) (let [aid (get-in a [:params :orderBy])]
+                                                                          (assoc-in a [:params :orderBy] (get @id-mappings aid)))
+                               :else a
+                               )) aggregations)
+
         ]
     {:visualization {:type      type
                      :params    params
@@ -103,3 +119,9 @@
 (def markdown (partial chart "markdown"
                        {:markdown ""}
                        markdown-params))
+
+
+
+
+(defn aggregation-y-template [agg-type parameters]
+  {:aggregation-y {:type agg-type :schema "metric" :params {:field (:field parameters)}}})

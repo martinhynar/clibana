@@ -9,7 +9,7 @@
 ;; OPTIONS
 (defn with-options
   "Specify sequence of options to drive shape of the result document."
-  [& options] (c/with-options options))
+  [& options] (apply c/with-options options))
 
 ;; DESCRIPTION
 (defn with-description
@@ -34,33 +34,55 @@
 
 ;;; AGGREGATIONS
 
-(defn aggregation-max [field] {:aggregation {:type "max" :schema "metric" :params {:field field}}})
-
 (defn aggregation-terms [field & options]
   (let [options (apply hash-map options)]
-    {:aggregation {:type   "terms"
-                   :schema "group"
-                   :params {:field   field
-                            :size    (get options :size 10)
-                            :order   (name (get options :order "desc"))
-                            :orderBy "1"
-                            }}}))
+    {:aggregation-x {:type   "terms"
+                     :schema "group"
+                     :params {:field   field
+                              :size    (get options :size 10)
+                              :order   (name (get options :order "desc"))
+                              :orderBy (if-let [oby (get options :orderBy)] oby "1")
+                              }}}))
 
 (defn aggregation-date-histogram [field & options]
   (let [options (apply hash-map options)]
-    {:aggregation {:type   "date_histogram"
-                   :schema "segment"
-                   :params {:field           field
-                            :interval        (get options :interval "auto")
-                            :min_doc_count   (get options :min-doc 1)
-                            :extended_bounds {}}}}))
+    {:aggregation-x {:type   "date_histogram"
+                     :schema "segment"
+                     :params {:field           field
+                              :interval        (get options :interval "auto")
+                              :min_doc_count   (get options :min-doc 1)
+                              :extended_bounds {}}}}))
 
 
 
 
-(defn chart-with-aggregation [type & parameters]
+(defn chart-with-Y-aggregation [type & parameters]
+  (let [parameters (apply hash-map parameters)]
+    (condp = type
+      :count (let [base {:type "count" :schema "metric" :params {}}]
+               (if-let [id (:id parameters)]
+                 {:aggregation-y (assoc base :id id)}
+                 {:aggregation-y base}
+                 )
+               )
+
+      :average (vc/aggregation-y-template "avg" parameters)
+      :sum (vc/aggregation-y-template "sum" parameters)
+      :max (vc/aggregation-y-template "max" parameters)
+      :min (vc/aggregation-y-template "min" parameters)
+      :standard-deviation (vc/aggregation-y-template "std_dev" parameters)
+      :unique-count (vc/aggregation-y-template "cardinality" parameters)
+      :percentiles {:aggregation-y {:type   "percentiles" :schema "metric"
+                                    :params {:field    (:field parameters)
+                                             :percents (if-let [percents (:percens parameters)]
+                                                         percents
+                                                         [1 5 25 50 75 95 99])}}}
+      ;; Default sink
+      nil
+      )))
+
+(defn chart-with-X-aggregation [type & parameters]
   (condp = type
-    :max (apply aggregation-max parameters)
     :terms (apply aggregation-terms parameters)
     :date-histogram (apply aggregation-date-histogram parameters)
     ;; Default sink
@@ -131,9 +153,7 @@
 
     (when-let [saved-search (c/<-saved-search decorations)]
       (swap! vis-doc assoc :savedSearchId saved-search))
-
-    @vis-doc
-    ))
+    @vis-doc))
 
 
 (comment
@@ -144,9 +164,9 @@
                  (with-area-chart
                    (chart-with-parameter :mode :stacked)
                    (chart-with-parameter :spyPerPage 10)
-                   (chart-with-aggregation :max "metric")
-                   (chart-with-aggregation :date-histogram "@timestamp")
-                   (chart-with-aggregation :terms "service"))
+                   (chart-with-Y-aggregation :max "metric")
+                   (chart-with-X-aggregation :date-histogram "@timestamp")
+                   (chart-with-X-aggregation :terms "service"))
                  (with-search "build-*" {:query "service : \"cpu#1 user\""}))
 
   ;; With saved search
@@ -156,8 +176,8 @@
                  (with-bar-chart
                    (chart-with-parameter :mode :stacked)
                    (chart-with-parameter :spyPerPage 10)
-                   (chart-with-aggregation :max "metric")
-                   (chart-with-aggregation :date-histogram "@timestamp")
-                   (chart-with-aggregation :terms "service"))
+                   (chart-with-Y-aggregation :max "metric")
+                   (chart-with-X-aggregation :date-histogram "@timestamp")
+                   (chart-with-X-aggregation :terms "service"))
                  (with-saved-search "saved-search-id"))
   )
