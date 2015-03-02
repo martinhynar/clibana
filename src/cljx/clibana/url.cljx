@@ -36,9 +36,13 @@
 (defn with-title
   [title] {:title (str "title=" (url-encode title))})
 
+(defn a-with-query
+  [query] {:query (str "query:(query_string:(query:'" (url-encode (:query query)) "'))")})
+
 (defn with-a [& decorations]
-  (let [t (take-first :title decorations)]
-    {:a (str "&_a=(" t ")")}))
+  (let [t (take-first :title decorations)
+        query (take-first :query decorations)]
+    {:a (str "&_a=(" query ")")}))
 
 
 (defn dashboard-url [& decorations]
@@ -50,7 +54,6 @@
     )
 
   )
-
 
 (defn example []
   (dashboard-url
