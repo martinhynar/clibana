@@ -79,6 +79,21 @@
             (v/chart-with-Y-aggregation :max :field "metric")))))
   )
 
+(deftest about-with-line-chart
+  (testing "line chart with single parameter"
+    (is (=
+          {:visualization {:type      "line"
+                           :listeners {}
+                           :params    {:addLegend       true
+                                       :addTooltip      true
+                                       :defaultYExtents false
+                                       :shareYAxis      true}
+                           :aggs      [{:id "1" :type "max" :schema "metric" :params {:field "metric"}}]
+                           }}
+          (v/with-line-chart
+            (v/chart-with-Y-aggregation :max :field "metric")))))
+  )
+
 (deftest about-with-area-chart
   (testing "area with single parameter"
     (is (=

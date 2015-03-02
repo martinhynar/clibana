@@ -28,19 +28,19 @@
 (deftest about-with-and
   (testing "2 queries"
     (is (= {:query "Q1 AND Q2"}
-           (q/with-and "Q1" "Q2"))))
+           (q/with-and {:query "Q1"} {:query "Q2"}))))
   (testing "more queries"
     (is (= {:query "Q1 AND Q2 AND Q3 AND Q4"}
-           (q/with-and "Q1" "Q2" "Q3" "Q4"))))
+           (q/with-and {:query "Q1"} {:query "Q2"} {:query "Q3"} {:query "Q4"}))))
   )
 
 (deftest about-with-or
   (testing "2 queries"
     (is (= {:query "Q1 OR Q2"}
-           (q/with-or "Q1" "Q2"))))
+           (q/with-or {:query "Q1"} {:query "Q2"}))))
   (testing "more queries"
     (is (= {:query "Q1 OR Q2 OR Q3 OR Q4"}
-           (q/with-or "Q1" "Q2" "Q3" "Q4"))))
+           (q/with-or {:query "Q1"} {:query "Q2"} {:query "Q3"} {:query "Q4"}))))
   )
 
 (deftest about-with-number-range

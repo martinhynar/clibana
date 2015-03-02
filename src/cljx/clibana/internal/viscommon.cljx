@@ -59,6 +59,11 @@
                                           modes (select-keys modes relevant-modes)]
                                       (get modes v "stacked")))})
 
+(def line-params {:addLegend       #(true? %)
+                  :addTooltip      #(true? %)
+                  :shareYAxis      #(true? %)
+                  :defaultYExtents #(true? %)})
+
 (def area-params {:addLegend       #(true? %)
                   :addTooltip      #(true? %)
                   :shareYAxis      #(true? %)
@@ -91,6 +96,13 @@
                          :defaultYExtents false
                          :mode            "stacked"}
                         bar-params))
+
+(def line-chart (partial chart "line"
+                         {:addLegend       true
+                          :addTooltip      true
+                          :shareYAxis      true
+                          :defaultYExtents false}
+                         line-params))
 
 (def pie-chart (partial chart "pie"
                         {:addLegend  true

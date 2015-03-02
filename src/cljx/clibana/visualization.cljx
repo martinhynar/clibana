@@ -37,7 +37,7 @@
 (defn aggregation-terms [field & options]
   (let [options (apply hash-map options)]
     {:aggregation-x {:type   "terms"
-                     :schema "group"
+                     :schema (get options :schema "group")
                      :params {:field   field
                               :size    (get options :size 10)
                               :order   (name (get options :order "desc"))
@@ -102,6 +102,11 @@
   "Construct histogram bar plot"
   [& decorations]
   (apply vc/bar-chart decorations))
+
+(defn with-line-chart
+  "Construct line plot"
+  [& decorations]
+  (apply vc/line-chart decorations))
 
 (defn with-area-chart
   "Construct area plot"

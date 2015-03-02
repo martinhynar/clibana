@@ -32,7 +32,7 @@
     nil))
 
 (defn with-and [query1 query2 & queries]
-  {:query (apply str (interpose " AND " (into [query1 query2] queries)))})
+  {:query (apply str (interpose " AND " (into [(:query query1) (:query query2)] (map :query queries))))})
 
 (defn with-or [query1 query2 & queries]
-  {:query (apply str (interpose " OR " (into [query1 query2] queries)))})
+  {:query (apply str (interpose " OR " (into [(:query query1) (:query query2)] (map :query queries))))})
