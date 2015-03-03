@@ -1,6 +1,10 @@
 # clibana [![Build Status](https://travis-ci.org/martinhynar/clibana.svg)](https://travis-ci.org/martinhynar/clibana/builds)
 A Clojure based generator for Kibana 4 objects.
 
+#### Latest version
+[![Clojars Project](http://clojars.org/clibana/latest-version.svg)](http://clojars.org/clibana)
+
+**Versions 0.1.x are quite immature and subject to changes. However, feel free to experiment!**
 
 ## Documentation
 * [Usage guide with examples](http://clibana.martinhynar.cz/)
