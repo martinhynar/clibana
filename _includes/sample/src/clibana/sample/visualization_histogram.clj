@@ -1,16 +1,12 @@
 (ns clibana.sample.visualization-histogram
-  (:require [clibana.visualization :as cv]
-            [clibana.query :as cq]))
+  (:require [clibana.visualization :as cv]))
 
 (cv/visualization
   "vis-id"
   (cv/with-bar-chart
-    ;; Display histogram as percentage
-    (cv/chart-with-parameter :mode "percentage")
-    ;; max of metric on Y axis
-    (cv/chart-with-aggregation :max "metric")
+    ;; max of field metric on Y axis
+    (cv/chart-with-Y-aggregation :count)
     ;; time values on X axis
-    (cv/chart-with-aggregation :date-histogram "@timestamp")
-    ;; Split histogram bars by terms of service field
-    (cv/chart-with-aggregation :terms "service"))
+    (cv/chart-with-X-aggregation :date-histogram :field "@timestamp"))
+  ;; Display data based on saved search
   (cv/with-saved-search "saved search id"))

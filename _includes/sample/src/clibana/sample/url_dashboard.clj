@@ -1,5 +1,7 @@
 (ns clibana.sample.url-dashboard
-  (:require [clibana.url :as cu]))
+  (:require
+    [clibana.url :as cu]
+    [clibana.query :as cq]))
 
 ;; Link to the dashboard
 (cu/dashboard-url
@@ -13,4 +15,4 @@
     (cu/with-time-relative 5 :days))
   ;; Define artifacts
   (cu/with-a
-    (cu/with-title "Title")))
+    (cu/a-with-query (cq/with-terms "service" ["termA" "termB"]))))

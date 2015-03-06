@@ -9,10 +9,73 @@ published: true
     {% include header.html %}
     <h2>Visualization</h2>
 
-    {% highlight clojure %}
+    In Kibana, you can create objects that describe what data will be displayed in some graph. In terms of Kibana, this
+    is called <i>visualization</i>. Visualizations are stored in underlaying ElasticSearch database as documents that
+    could be referenced from <a href="dashboard.html">dashboards</a> and displayed. In the following examples,
+    visualizations with various graphs will be created and explained.
+
+    <h3>Basic example</h3>
+
+    <p>
+        To get the glimpse of how to create visualization, let start with some basic example of histogram (bar) chart
+        displaying count of documents as time progresses. Lets go through the main points in the code.
+    </p>
+
+    <p>
+        Namespace <code>clibana.visualization</code> is plugged in, as it defines functions to build up visualization
+        representation.
+    </p>
+
+    <p>
+        With <code>visualization</code> we say that we want to build visualization. It has single mandatory parameter
+        that defines <tt>id</tt> of the visualization. (This <tt>id</tt> could be later used to reference visualization
+        from dashboard.) Additional parameters of the visualization are constructed using specific builders that are
+        following.
+    </p>
+
+    <p>
+        Next, using <code>with-bar-chart</code>, we say that we want visualization that contains bar chart.
+    </p>
+
+    <p>
+        Now, we need to define <tt>X</tt> and <tt>Y</tt> axes of the bar chart.
+    </p>
+
+    <p>
+        Using <code>chart-with-Y-aggregation</code>, having parameter <code>:count</code>, we say that we want
+        <tt>Y</tt> axis to be count of documents. There is no additional parameter as count is just count, different
+        <tt>Y</tt> axis types have extra parameters, but more on this later.
+    </p>
+
+    <p>
+        Using <code>chart-with-X-aggregation</code> we define what we want <tt>X</tt> axis to be. Here we have parameter
+        <code>:date-histogram</code> causing <tt>X</tt> axis to be made of time ticks (with automatic sizing by
+        default). Next parameter pair <code>:field "@timestamp"</code> define which field is taken as source for those
+        time ticks.
+    </p>
+
+    <p>
+        Last, we need to slurp some data. This is done using <code>with-saved-search</code> that references some saved
+        search by its id. We could use here explicit search query, but this will be explained in separate example.
+    </p>
+
+    {% highlight clojure linenos %}
     {% include sample/src/clibana/sample/visualization_histogram.clj %}
     {% endhighlight %}
 
+
+    <h3>Visualization with explicit search</h3>
+
+    <p>TBD</p>
+
+    <h3>Visualization with split inside plot</h3>
+
+    <p>TBD</p>
+
+    <h3>Visualization with split plots</h3>
+
+    <p>TBD</p>
+    {% include footer.html %}
 </div>
 </body>
 </html>
