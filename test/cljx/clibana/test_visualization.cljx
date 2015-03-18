@@ -1,12 +1,12 @@
 (ns clibana.test-visualization
   #+clj (:require
-          [clibana.visualization :as v]
+          [clibana.visualization :as cv]
           [clojure.test :refer :all])
   #+cljs (:require-macros
            [cemerick.cljs.test :refer (is deftest testing)])
   #+cljs (:require
            [cemerick.cljs.test :as t]
-           [clibana.visualization :as v])
+           [clibana.visualization :as cv])
   )
 
 
@@ -15,26 +15,26 @@
     (is (= {:search {:index  "an-index"
                      :query  {:query_string {:query "this is query"}}
                      :filter []}}
-           (v/with-search "an-index" {:query "this is query"})))))
+           (cv/with-search "an-index" {:query "this is query"})))))
 
 (deftest with-parameter-creates-map
-  (is (= (v/chart-with-parameter :mode "stacked")
+  (is (= (cv/chart-with-parameter :mode "stacked")
          {:param {:mode "stacked"}})))
 
 (deftest about-invalid-aggregation
   (testing "invalid aggregation"
-    (is (nil? (v/chart-with-X-aggregation :invalid)))))
+    (is (nil? (cv/chart-with-X-aggregation :invalid)))))
 
 
 
 (deftest about-date-histogram-aggregation
   (testing "about max aggregation"
-    (is (= (v/chart-with-Y-aggregation :max :field "metric")
+    (is (= (cv/chart-with-Y-aggregation :max :field "metric")
            {:aggregation-y {:type "max" :schema "metric" :params {:field "metric"}}}))))
 
 (deftest about-date-histogram-aggregation
   (testing "date histogramvia dispatch, use defaults"
-    (is (= (v/chart-with-X-aggregation :date-histogram "timestamp")
+    (is (= (cv/chart-with-X-aggregation :date-histogram "timestamp")
            {:aggregation-x {:type   "date_histogram"
                             :schema "segment"
                             :params {:field           "timestamp"
@@ -45,7 +45,7 @@
   )
 
 (deftest terms-via-dispatch-use-defaults
-  (is (= (v/chart-with-X-aggregation :terms "service")
+  (is (= (cv/chart-with-X-aggregation :terms "service")
          {:aggregation-x {:type "terms" :schema "group" :params {:field   "service"
                                                                  :size    10
                                                                  :order   "desc"
@@ -54,7 +54,7 @@
   )
 
 (deftest terms-via-dispatch-bottom-15
-  (is (= (v/chart-with-X-aggregation :terms "service" :order :asc :size 15)
+  (is (= (cv/chart-with-X-aggregation :terms "service" :order :asc :size 15)
          {:aggregation-x {:type "terms" :schema "group" :params {:field   "service"
                                                                  :size    15
                                                                  :order   "asc"
@@ -74,9 +74,9 @@
                                        :shareYAxis      true}
                            :aggs      [{:id "1" :type "max" :schema "metric" :params {:field "metric"}}]
                            }}
-          (v/with-bar-chart
-            (v/chart-with-parameter :mode :percentage)
-            (v/chart-with-Y-aggregation :max :field "metric")))))
+          (cv/with-bar-chart
+            (cv/chart-with-parameter :mode :percentage)
+            (cv/chart-with-Y-aggregation :max :field "metric")))))
   )
 
 (deftest about-with-line-chart
@@ -90,8 +90,8 @@
                                        :shareYAxis      true}
                            :aggs      [{:id "1" :type "max" :schema "metric" :params {:field "metric"}}]
                            }}
-          (v/with-line-chart
-            (v/chart-with-Y-aggregation :max :field "metric")))))
+          (cv/with-line-chart
+            (cv/chart-with-Y-aggregation :max :field "metric")))))
   )
 
 (deftest about-with-area-chart
@@ -106,9 +106,9 @@
                                        :shareYAxis      true}
                            :aggs      [{:id "1" :type "max" :schema "metric" :params {:field "metric"}}]
                            }}
-          (v/with-area-chart
-            (v/chart-with-parameter :mode :percentage)
-            (v/chart-with-Y-aggregation :max :field "metric")))))
+          (cv/with-area-chart
+            (cv/chart-with-parameter :mode :percentage)
+            (cv/chart-with-Y-aggregation :max :field "metric")))))
   )
 
 (deftest about-with-pie-chart
@@ -123,9 +123,9 @@
                            :aggs      [{:id "1" :type "max" :schema "metric" :params {:field "metric"}}]
 
                            }}
-          (v/with-pie-chart
-            (v/chart-with-parameter :isDonut true)
-            (v/chart-with-Y-aggregation :max :field "metric")))))
+          (cv/with-pie-chart
+            (cv/chart-with-parameter :isDonut true)
+            (cv/chart-with-Y-aggregation :max :field "metric")))))
   )
 
 (deftest about-with-metric-chart
@@ -135,9 +135,9 @@
                            :listeners {}
                            :params    {:fontSize 80}
                            :aggs      [{:id "1" :type "max" :schema "metric" :params {:field "metric"}}]}}
-          (v/with-metric-chart
-            (v/chart-with-parameter :fontSize 80)
-            (v/chart-with-Y-aggregation :max :field "metric")))))
+          (cv/with-metric-chart
+            (cv/chart-with-parameter :fontSize 80)
+            (cv/chart-with-Y-aggregation :max :field "metric")))))
   )
 
 (deftest about-with-data-table
@@ -149,9 +149,9 @@
                                        :showPartialRows       false
                                        :showMeticsAtAllLevels false}
                            :aggs      [{:id "1" :type "max" :schema "metric" :params {:field "metric"}}]}}
-          (v/with-data-table
-            (v/chart-with-parameter :perPage 20)
-            (v/chart-with-Y-aggregation :max :field "metric")))))
+          (cv/with-data-table
+            (cv/chart-with-parameter :perPage 20)
+            (cv/chart-with-Y-aggregation :max :field "metric")))))
   )
 
 (deftest about-with-markdown
@@ -161,8 +161,8 @@
                            :listeners {}
                            :params    {:markdown "A text to display"}
                            :aggs      []}}
-          (v/with-markdown
-            (v/chart-with-parameter :markdown "A text to display")
+          (cv/with-markdown
+            (cv/chart-with-parameter :markdown "A text to display")
             ))))
   (testing "markdown with no content"
     (is (=
@@ -170,7 +170,7 @@
                            :listeners {}
                            :params    {:markdown ""}
                            :aggs      []}}
-          (v/with-markdown))))
+          (cv/with-markdown))))
   )
 
 (deftest about-visualization
@@ -190,15 +190,15 @@
                                                     :query  {:query_string {:query "query"}}
                                                     :filter []}}
          }
-        (v/visualization "Example"
-                         (v/with-description "Example description")
-                         ;; Let the output is clojure structure
-                         (v/with-options :encode-json? false)
-                         (v/with-area-chart
-                           (v/chart-with-parameter :mode :stacked)
-                           (v/chart-with-Y-aggregation :count)
-                           (v/chart-with-X-aggregation :terms "service"))
-                         (v/with-search "index" {:query "query"})))))
+        (cv/visualization "Example"
+                          (cv/with-description "Example description")
+                          ;; Let the output is clojure structure
+                          (cv/with-options :encode-json? false)
+                          (cv/with-area-chart
+                            (cv/chart-with-parameter :mode :stacked)
+                            (cv/chart-with-Y-aggregation :count)
+                            (cv/chart-with-X-aggregation :terms "service"))
+                          (cv/with-search "index" {:query "query"})))))
 
   (testing "visualization with terms ordered by second Y aggregation"
     (is
@@ -219,18 +219,18 @@
                                                     :query  {:query_string {:query "query"}}
                                                     :filter []}}
          }
-        (v/visualization "Example"
-                         (v/with-description "Example description")
-                         ;; Let the output is clojure structure
-                         (v/with-options :encode-json? false)
-                         (v/with-area-chart
-                           (v/chart-with-parameter :mode :stacked)
-                           ;; id = 1
-                           (v/chart-with-Y-aggregation :max :field "field")
-                           ;; id = 2
-                           (v/chart-with-Y-aggregation :count :id :count-1)
-                           ;; id = 3
-                           (v/chart-with-X-aggregation :terms "service" :orderBy :count-1))
-                         (v/with-search "index" {:query "query"})))))
+        (cv/visualization "Example"
+                          (cv/with-description "Example description")
+                          ;; Let the output is clojure structure
+                          (cv/with-options :encode-json? false)
+                          (cv/with-area-chart
+                            (cv/chart-with-parameter :mode :stacked)
+                            ;; id = 1
+                            (cv/chart-with-Y-aggregation :max :field "field")
+                            ;; id = 2
+                            (cv/chart-with-Y-aggregation :count :id :count-1)
+                            ;; id = 3
+                            (cv/chart-with-X-aggregation :terms "service" :orderBy :count-1))
+                          (cv/with-search "index" {:query "query"})))))
 
   )

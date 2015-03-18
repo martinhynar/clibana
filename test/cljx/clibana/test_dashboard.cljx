@@ -1,11 +1,11 @@
 (ns clibana.test-dashboard
-  #+clj (:require [clibana.internal.common :as c]
-                  [clibana.dashboard :as d]
+  #+clj (:require [clibana.internal.common :as cic]
+                  [clibana.dashboard :as cd]
                   [clojure.test :refer :all])
   #+cljs (:require-macros [cemerick.cljs.test :refer (is deftest testing)])
   #+cljs (:require [cemerick.cljs.test :as t]
-           [clibana.dashboard :as d]
-           [clibana.internal.common :as c])
+           [clibana.dashboard :as cd]
+           [clibana.internal.common :as cic])
   )
 
 
@@ -38,42 +38,42 @@
 
 (deftest about-with-visualizations
   (testing "Visualization without position"
-    (is (= (d/with-visualization "ID")
+    (is (= (cd/with-visualization "ID")
            {:id "ID" :type "visualization"})))
   (testing "Visualization with single position"
-    (is (= (d/with-visualization "ID" {:col 5})
+    (is (= (cd/with-visualization "ID" {:col 5})
            {:id "ID" :col 5 :type "visualization"})))
   (testing "Visualization with multiple positions"
-    (is (= (d/with-visualization "ID" {:col 5} {:row 1})
+    (is (= (cd/with-visualization "ID" {:col 5} {:row 1})
            {:id "ID" :col 5 :row 1 :type "visualization"})))
 
   )
 
 (deftest about-dashboard
   (testing "Dashboard with title"
-    (is (= (d/dashboard "Dashboard")
+    (is (= (cd/dashboard "Dashboard")
            {:description "" :panelsJSON "[]" :title "Dashboard"})))
   (testing "Dashboard with title and description"
-    (is (= (d/dashboard "Dashboard" (c/with-description "Description"))
+    (is (= (cd/dashboard "Dashboard" (cic/with-description "Description"))
            {:description "Description" :panelsJSON "[]" :title "Dashboard"})))
   (testing "Dashboard with option to not encode into json"
-    (is (= (d/dashboard "Dashboard" (c/with-options :encode-json? false))
+    (is (= (cd/dashboard "Dashboard" (cic/with-options :encode-json? false))
            {:description "" :panelsJSON [] :title "Dashboard"})))
   (testing "Dashboard with option to not encode into json and single valid visualization"
-    (is (= (d/dashboard "Dashboard"
-                        (c/with-options :encode-json? false)
-                        (d/with-visualization "V1" {:row 1}))
+    (is (= (cd/dashboard "Dashboard"
+                        (cic/with-options :encode-json? false)
+                        (cd/with-visualization "V1" {:row 1}))
            {:description "" :panelsJSON [{:id "V1" :row 1 :type "visualization"}] :title "Dashboard"})))
   (testing "Dashboard with option to not encode into json and multiple valid visualization"
-    (is (= (d/dashboard "Dashboard"
-                        (c/with-options :encode-json? false)
-                        (d/with-visualization "V1" {:row 1})
-                        (d/with-visualization "V2" {:col 2}))
+    (is (= (cd/dashboard "Dashboard"
+                        (cic/with-options :encode-json? false)
+                        (cd/with-visualization "V1" {:row 1})
+                        (cd/with-visualization "V2" {:col 2}))
            {:description "" :panelsJSON [{:id "V1" :row 1 :type "visualization"} {:id "V2" :col 2 :type "visualization"}] :title "Dashboard"})))
   (testing "Dashboard with option to not encode into json and single completelly valid and single partially valid visualization"
-    (is (= (d/dashboard "Dashboard"
-                        (c/with-options :encode-json? false)
-                        (d/with-visualization "V1" {:row 1})
-                        (d/with-visualization "V2" {:invalid 2}))
+    (is (= (cd/dashboard "Dashboard"
+                        (cic/with-options :encode-json? false)
+                        (cd/with-visualization "V1" {:row 1})
+                        (cd/with-visualization "V2" {:invalid 2}))
            {:description "" :panelsJSON [{:id "V1" :row 1 :type "visualization"} {:id "V2" :type "visualization"}] :title "Dashboard"})))
   )

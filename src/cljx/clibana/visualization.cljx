@@ -1,7 +1,7 @@
 (ns clibana.visualization
   (:require
-    [clibana.internal.common :as c]
-    [clibana.internal.viscommon :as vc]
+    [clibana.internal.common :as cic]
+    [clibana.internal.visualization_int :as civ]
     #+clj [clojure.data.json :as json]
     #+cljs [goog.json :as json]
     ))
@@ -9,12 +9,12 @@
 ;; OPTIONS
 (defn with-options
   "Specify sequence of options to drive shape of the result document."
-  [& options] (apply c/with-options options))
+  [& options] (apply cic/with-options options))
 
 ;; DESCRIPTION
 (defn with-description
   "Give your visualization some human readable description."
-  [description] (c/with-description description))
+  [description] (cic/with-description description))
 
 ;;; SEARCH
 (defn with-saved-search
@@ -24,12 +24,10 @@
 (defn with-search
   "Use in-place created search."
   [index & decorations]
-  (let [query (c/<-query decorations)]
+  (let [query (cic/<-query decorations)]
     {:search {:index  index
               :query  {:query_string {:query query}}
               :filter (get decorations :filter [])}}))
-
-
 
 
 ;;; AGGREGATIONS
@@ -66,12 +64,12 @@
                  )
                )
 
-      :average (vc/aggregation-y-template "avg" parameters)
-      :sum (vc/aggregation-y-template "sum" parameters)
-      :max (vc/aggregation-y-template "max" parameters)
-      :min (vc/aggregation-y-template "min" parameters)
-      :standard-deviation (vc/aggregation-y-template "std_dev" parameters)
-      :unique-count (vc/aggregation-y-template "cardinality" parameters)
+      :average (civ/aggregation-y-template "avg" parameters)
+      :sum (civ/aggregation-y-template "sum" parameters)
+      :max (civ/aggregation-y-template "max" parameters)
+      :min (civ/aggregation-y-template "min" parameters)
+      :standard-deviation (civ/aggregation-y-template "std_dev" parameters)
+      :unique-count (civ/aggregation-y-template "cardinality" parameters)
       :percentiles {:aggregation-y {:type   "percentiles" :schema "metric"
                                     :params {:field    (:field parameters)
                                              :percents (if-let [percents (:percens parameters)]
@@ -101,46 +99,46 @@
 (defn with-bar-chart
   "Construct histogram bar plot"
   [& decorations]
-  (apply vc/bar-chart decorations))
+  (apply civ/bar-chart decorations))
 
 (defn with-line-chart
   "Construct line plot"
   [& decorations]
-  (apply vc/line-chart decorations))
+  (apply civ/line-chart decorations))
 
 (defn with-area-chart
   "Construct area plot"
   [& decorations]
-  (apply vc/area-chart decorations))
+  (apply civ/area-chart decorations))
 
 (defn with-pie-chart
   "Construct pie plot"
   [& decorations]
-  (apply vc/pie-chart decorations))
+  (apply civ/pie-chart decorations))
 
 (defn with-metric-chart
   "Construct metric"
   [& decorations]
-  (apply vc/metric-chart decorations))
+  (apply civ/metric-chart decorations))
 
 (defn with-data-table
   "Construct data table"
   [& decorations]
-  (apply vc/data-table decorations))
+  (apply civ/data-table decorations))
 
 (defn with-markdown
   "Construct markdown component"
   [& decorations]
-  (apply vc/markdown decorations))
+  (apply civ/markdown decorations))
 
 
 (defn visualization
   "Construct document describing visualization"
   [title & decorations]
-  (let [description (c/<-description decorations)
-        options (c/<-options decorations)
-        visualization (c/<-visualization decorations)
-        search (c/<-search decorations)
+  (let [description (cic/<-description decorations)
+        options (cic/<-options decorations)
+        visualization (cic/<-visualization decorations)
+        search (cic/<-search decorations)
         encode-json? (get options :encode-json? true)
         vis-doc (atom {:title                 title
                        ;; If there is no description given, empty string is used
@@ -156,7 +154,7 @@
                                                                    search)}
                        })]
 
-    (when-let [saved-search (c/<-saved-search decorations)]
+    (when-let [saved-search (cic/<-saved-search decorations)]
       (swap! vis-doc assoc :savedSearchId saved-search))
     @vis-doc))
 

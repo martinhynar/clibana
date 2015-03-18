@@ -1,6 +1,6 @@
 (ns clibana.dashboard
   (:require
-    [clibana.internal.common :as c]
+    [clibana.internal.common :as cic]
     #+clj [clojure.data.json :as json]
     #+cljs [goog.json :as json]
     ))
@@ -9,12 +9,12 @@
 ;; OPTIONS
 (defn with-options
   "Specify sequence of options to drive shape of the result document."
-  [& options] (c/with-options options))
+  [& options] (cic/with-options options))
 
 ;; DESCRIPTION
 (defn with-description
   "Give your dashboard some human readable description."
-  [description] (c/with-description description))
+  [description] (cic/with-description description))
 
 
 (defn with-position-and-size [col row width height] {:col col :row row :size_x width :size_y height})
@@ -47,8 +47,8 @@
 
 (defn dashboard
   ([title & decorations]
-   (let [description (c/<-description decorations)
-         options (c/<-options decorations)
+   (let [description (cic/<-description decorations)
+         options (cic/<-options decorations)
          panels (filter map? (map is-panel? decorations))
          ]
      {:title       title

@@ -1,5 +1,5 @@
-(ns clibana.internal.viscommon
-  (:require [clibana.internal.common :as c]))
+(ns clibana.internal.visualization_int
+  (:require [clibana.internal.common :as cic]))
 
 
 
@@ -13,11 +13,11 @@
 
 
 (defn chart [type default-params chart-params & decorations]
-  (let [options (c/<-options decorations)
-        params (resolve-params default-params chart-params (c/<-param decorations))
-        listeners (c/<-listener decorations)
-        aggregations-x (c/<-aggregation-x decorations)
-        aggregations-y (c/<-aggregation-y decorations)
+  (let [options (cic/<-options decorations)
+        params (resolve-params default-params chart-params (cic/<-param decorations))
+        listeners (cic/<-listener decorations)
+        aggregations-x (cic/<-aggregation-x decorations)
+        aggregations-y (cic/<-aggregation-y decorations)
         aggregations (concat aggregations-y aggregations-x)
         id-mappings (atom {})
         ;; build ID mapping and assign generated id's
@@ -25,7 +25,7 @@
                              ;; When there is :id assigned, take it and put it to id-mapping
                              (when-let [aid (:id a)] (swap! id-mappings assoc aid (str i)))
                              ;; Assign or replace :id with generated one
-                             (assoc a :id (str i))) (c/gen-ids) aggregations)
+                             (assoc a :id (str i))) (cic/gen-ids) aggregations)
         ;; Replace references
         aggregations (mapv (fn [a]
                              (cond

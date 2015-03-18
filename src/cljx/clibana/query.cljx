@@ -1,22 +1,26 @@
 (ns clibana.query
-  (:require [clibana.internal.date :as cid]))
+  (:require [clibana.internal.date :as cid]
+            [clibana.internal.query-int :as ciq]))
 
-(defn with-string [field term] {:query (str field " : \"" term "\"")})
+(defn with-strings
+  ([field string]
+   {:query (str field " : \"" string "\"")})
 
-(defn with-strings [field terms] {:query (str field " : (" (reduce str (interpose " " (map #(str "\"" % "\"") terms))) ")")})
+  ([field string & strings]
+   {:query (str field " : (" (reduce str (interpose " " (map #(str "\"" % "\"") (conj strings string)))) ")")})
+  )
 
-(defn with-term [field term] {:query (str field " : " term)})
+(defn with-terms
+  ([field term] {:query (str field " : " term)})
+  ([field term & terms] {:query (str field " : (" (reduce str (interpose " " (conj terms term))) ")")})
+  )
 
-(defn with-terms [field terms] {:query (str field " : (" (reduce str (interpose " " terms)) ")")})
-
-(def inexfrom {:inclusive "[" :exclusive "{"})
-(def inexto {:inclusive "]" :exclusive "}"})
 (defn with-number-range [field from-kw from to-kw to]
   (if (and (number? from) (number? to))
     {:query (str field " : "
-                 (get inexfrom from-kw "[")
+                 (get ciq/inexfrom from-kw "[")
                  (min from to) " TO " (max from to)
-                 (get inexto to-kw "]"))}
+                 (get ciq/inexto to-kw "]"))}
     nil))
 
 (defn with-date-range
@@ -26,13 +30,17 @@
   [field from-kw from to-kw to]
   (if (and (cid/is-date? from) (cid/is-date? to))
     {:query (str field " : "
-                 (get inexfrom from-kw "[")
+                 (get ciq/inexfrom from-kw "[")
                  "\"" from "\" TO \"" to "\""
-                 (get inexto to-kw "]"))}
+                 (get ciq/inexto to-kw "]"))}
     nil))
 
-(defn with-and [query1 query2 & queries]
+(defn with-and
+  "Constructs queries of the form q1 AND q2 ..."
+  [query1 query2 & queries]
   {:query (apply str (interpose " AND " (into [(:query query1) (:query query2)] (map :query queries))))})
 
-(defn with-or [query1 query2 & queries]
+(defn with-or
+  "Constructs queries of the form q1 OR q2 ..."
+  [query1 query2 & queries]
   {:query (apply str (interpose " OR " (into [(:query query1) (:query query2)] (map :query queries))))})
