@@ -22,7 +22,7 @@
             [lein-pdo "0.1.1"]
             [codox "0.8.10"]]
 
-  :jar-exclusions [#"\.cljx|\.svn|\.swp|\.swo|\.DS_Store"]
+  :jar-exclusions [#"\.cljx|\.svn|\.swp|\.swo|\.DS_Store|play_with_*"]
 
   :prep-tasks [["cljx" "once"] "javac" "compile"]
 
@@ -52,13 +52,14 @@
 
 
   :profiles {
-             :dev  {
-                    :aliases {"once"       ["do" "cljx" "once," "cljsbuild" "once"]
-                              "auto"       ["pdo" "cljx" "auto," "cljsbuild" "auto"]
-                              "test-all"   ["with-profile" "test" "do" "clean," "cljx" "once," "cljsbuild" "test," "test"]
-                              "local-site" ["do" "with-profile" "site" "doc"]
-                              }
+             :dev  {:dependencies [[clojurewerkz/elastisch "2.1.0"]]
+                    :aliases      {"once"       ["do" "cljx" "once," "cljsbuild" "once"]
+                                   "auto"       ["pdo" "cljx" "auto," "cljsbuild" "auto"]
+                                   "test-all"   ["with-profile" "test" "do" "clean," "cljx" "once," "cljsbuild" "test," "test"]
+                                   "local-site" ["do" "with-profile" "site" "doc"]
+                                   }
                     }
              :jar  {:aot :all}
              :site {:codox {:output-dir "../clibana-gh-pages/api" :exclude [clibana.internal.common]}}
-             })
+             }
+  :repl-options {:init-ns play-with-search})
