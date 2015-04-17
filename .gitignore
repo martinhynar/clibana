@@ -12,3 +12,4 @@ pom.xml.asc
 .nrepl-port
 .idea
 clibana.iml
+.vagrant
