@@ -6,6 +6,36 @@
            [clibana.internal.common :as cic])
   )
 
+(deftest as-elastic-id
+  (testing "no replacement"
+    (is (= "valid"
+           (cic/as-elastic-id "valid"))))
+  (testing "slash"
+    (is (= "with-slash-character"
+           (cic/as-elastic-id "with/character"))))
+  (testing "questionmark"
+    (is (= "with-questionmark-character"
+           (cic/as-elastic-id "with?character"))))
+  (testing "ampersand"
+    (is (= "with-ampersand-character"
+           (cic/as-elastic-id "with&character"))))
+  (testing "equal"
+    (is (= "with-equal-character"
+           (cic/as-elastic-id "with=character"))))
+  (testing "space"
+    (is (= "with-space"
+           (cic/as-elastic-id "with space"))))
+  (testing "long space"
+    (is (= "with-space"
+           (cic/as-elastic-id "with     space"))))
+  (testing "multiple dashes"
+    (is (= "with-dash"
+           (cic/as-elastic-id "with  ---  dash"))))
+  (testing "multiple subsequent specials"
+    (is (= "with-slash-questionmark-ampersand-equal-characters"
+           (cic/as-elastic-id "with/?&=characters"))))
+  )
+
 (deftest about-options
   (testing "no options"
     (is (nil? (cic/<-options []))))
@@ -28,7 +58,7 @@
 
   (testing "multiple descriptions"
     (is (= (cic/<-description [{:description "Description"}
-                             {:description "Shall be discarded"}])
+                               {:description "Shall be discarded"}])
            "Description")))
   )
 

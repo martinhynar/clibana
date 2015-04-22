@@ -1,6 +1,5 @@
-(ns clibana.internal.common)
-
-
+(ns clibana.internal.common
+  (:require [clojure.string :as str]))
 
 (defn take-first
   "
@@ -42,8 +41,18 @@
 
 (defn with-options [& options] {:options (apply hash-map options)})
 
-
-
 (defn gen-ids
   ([] (gen-ids 1))
   ([n] (cons n (lazy-seq (gen-ids (inc n))))))
+
+(defn as-elastic-id
+  "Based on Kibana's slugify_id.js"
+  [to-be-id]
+  (let [id to-be-id
+        id (str/replace id #"/" "-slash-")
+        id (str/replace id #"\?" "-questionmark-")
+        id (str/replace id #"\&" "-ampersand-")
+        id (str/replace id #"=" "-equal-")
+        id (str/replace id #"[\s]+" "-")
+        id (str/replace id #"[\-]+" "-")]
+    id))
