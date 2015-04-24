@@ -1,5 +1,5 @@
 (defproject
-  clibana "0.1.0"
+  clibana "0.1.1-SNAPSHOT"
 
   :description "A Clojure based generator for Kibana 4 objects."
 
@@ -62,4 +62,4 @@
              :jar  {:aot :all}
              :site {:codox {:output-dir "../clibana-gh-pages/api" :exclude [clibana.internal.common]}}
              }
-  :repl-options {:init-ns play-with-search})
+  :repl-options {:init-ns play-with-clibana})
