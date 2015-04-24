@@ -3,6 +3,10 @@
             [clibana.internal.url-int :as ciu]
             [clibana.internal.common :as cic]))
 
+;; OPTIONS
+(defn with-options
+  "Specify sequence of options to drive shape of the result document."
+  [& options] (apply cic/with-options options))
 
 (defn with-host
   ([protocol server port] {:host (str protocol "://" server ":" port)})
@@ -22,28 +26,30 @@
 (defn with-time-absolute [from to]
   {:time (str "time:(from:'" (url-encode from) "',mode:absolute,to:'" (url-encode to) "')")})
 
-
-(defn with-g [& decorations]
-  (let [t (cic/take-first :time decorations)]
-    {:g (str "?_g=(" t ")")}))
+(defn with-refresh
+  ([amount unit] (let [unit (get ciu/refresh-units unit "seconds")]
+                   {:refresh (str "refreshInterval:(display:'" amount " " unit "',section:1,value:" (ciu/to-milliseconds amount unit) ")")}))
+  ([amount] (with-refresh amount :seconds)))
 
 
 (defn with-title
-  [title] {:title (str "title=" (url-encode title))})
+  [title] {:title (str "title:" (url-encode title))})
 
-(defn a-with-query
+(defn with-query
   [query] {:query (str "query:(query_string:(query:'" (url-encode (:query query)) "'))")})
-
-(defn with-a [& decorations]
-  (let [t (cic/take-first :title decorations)
-        query (cic/take-first :query decorations)]
-    {:a (str "&_a=(" query ")")}))
 
 
 (defn dashboard-url [& decorations]
-  (let [host (cic/take-first :host decorations)
+  (let [options (cic/<-options decorations)
+        host (cic/take-first :host decorations)
         id (cic/take-first :id decorations)
-        g (cic/take-first :g decorations)
-        a (cic/take-first :a decorations)]
-    (str host "/#/dashboard/" id g a)
+        title (cic/take-first :title decorations)
+        query (cic/take-first :query decorations)
+        time (cic/take-first :time decorations)
+        refresh (cic/take-first :refresh decorations)
+        encode-json? (get options :encode-json? true)]
+
+    (str host "/#/dashboard/" id (str "?_g=("
+                                      refresh
+                                      "," time ")") (str "&_a=(" query "," title ")"))
     ))
