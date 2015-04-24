@@ -1,9 +1,11 @@
 (ns clibana.test-search
   #+clj (:require [clibana.search :as cs]
+                  [clibana.query :as cq]
                   [clojure.test :refer :all])
   #+cljs (:require-macros [cemerick.cljs.test :refer (is deftest testing)])
   #+cljs (:require [cemerick.cljs.test :as t]
-           [clibana.search :as cs])
+           [clibana.search :as cs]
+           [clibana.query :as cq])
   )
 
 
@@ -31,13 +33,15 @@
 (deftest about-search
   (testing "no sort"
     (is (= (cs/search "Search"
-                     (cs/with-description "Description")
-                     (cs/with-columns "A" "B" "C")
-                     (cs/with-sort "B" :asc))
+                      (cs/with-description "Description")
+                      (cs/with-columns "A" "B" "C")
+                      (cs/with-index-pattern "index-*")
+                      (cs/with-sort "B" :asc)
+                      (cq/with-terms "A" "term"))
            {:title                 "Search"
             :description           "Description"
             :columns               ["A" "B" "C"]
             :sort                  ["B" "asc"],
-            :kibanaSavedObjectMeta {:searchSourceJSON "null"},}))
+            :kibanaSavedObjectMeta {:searchSourceJSON "{\"index\":\"index-*\",\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@\\/kibana-highlighted-field@\"],\"fields\":{\"*\":{}}},\"filter\":[],\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"A : term\"}}}"}}))
     )
   )
