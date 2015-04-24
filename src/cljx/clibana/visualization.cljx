@@ -11,6 +11,17 @@
   "Specify sequence of options to drive shape of the result document."
   [& options] (apply cic/with-options options))
 
+;; STORABLE ELASTICSEARCH ID
+(defn get-document-id
+  "Creates string that could be used as ElasticSearch document id.
+  Parameter 'visualization' could be
+  string - will be slugified to replace invalid characters
+  search map - (produced by clibana.visualization/visualization) from which its title will be taken and slugified"
+  [visualization]
+  (cond
+    (string? visualization) (cic/as-elastic-id visualization)
+    (map? visualization) (cic/as-elastic-id (:title visualization))))
+
 ;; DESCRIPTION
 (defn with-description
   "Give your visualization some human readable description."
@@ -18,8 +29,10 @@
 
 ;;; SEARCH
 (defn with-saved-search
-  "In visualization, use stored search with given ID."
-  [id] {:saved-search id})
+  "In visualization, use stored search. Parameter 'search' could be either
+   string or search structure (from clibana.search/search). The id will be
+   produced with get-document-id."
+  [search] {:saved-search (get-document-id search)})
 
 (defn with-search
   "Use in-place created search."
