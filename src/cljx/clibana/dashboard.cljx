@@ -11,6 +11,17 @@
   "Specify sequence of options to drive shape of the result document."
   [& options] (cic/with-options options))
 
+;; STORABLE ELASTICSEARCH ID
+(defn get-document-id
+  "Creates string that could be used as ElasticSearch document id.
+  Parameter 'dashboard' could be
+  string - will be slugified to replace invalid characters
+  search map - (produced by clibana.dashboard/dashboard) from which its title will be taken and slugified"
+  [dashboard]
+  (cond
+    (string? dashboard) (cic/as-elastic-id dashboard)
+    (map? dashboard) (cic/as-elastic-id (:title dashboard))))
+
 ;; DESCRIPTION
 (defn with-description
   "Give your dashboard some human readable description."
@@ -43,7 +54,17 @@
   (let [decoration (select-keys decoration [:col :row :size_x :size_y :id :type])]
     (if (empty? decoration) false decoration)))
 
-(defn with-visualization [id & positions] (apply merge {:type "visualization" :id (if (keyword? id) (name id) id)} positions))
+(defn with-visualization [visualization & positions]
+  (apply merge {:type "visualization"
+                :id   (cond
+                        (string? visualization) visualization
+                        (map? visualization) (cic/as-elastic-id (:title visualization)))}
+         positions))
+
+(defn with-search [id & positions]
+  (apply merge {:type "search"
+                :id   (if (keyword? id) (name id) id)}
+         positions))
 
 (defn dashboard
   ([title & decorations]
@@ -53,7 +74,6 @@
          ]
      {:title       title
       :description description
-      ;:hits 0
       :panelsJSON  (if (get options :encode-json? true)
 
                      #+clj (json/write-str (into [] panels))
