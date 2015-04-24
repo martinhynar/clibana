@@ -34,6 +34,9 @@
   (testing "multiple subsequent specials"
     (is (= "with-slash-questionmark-ampersand-equal-characters"
            (cic/as-elastic-id "with/?&=characters"))))
+  (testing "double slugification with multiple subsequent specials"
+    (is (= "with-slash-questionmark-ampersand-equal-characters"
+           (cic/as-elastic-id (cic/as-elastic-id "with/?&=characters")))))
   )
 
 (deftest about-options
