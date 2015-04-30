@@ -9,20 +9,20 @@
 
 (deftest about-with-terms
   (testing "single term"
-    (is (= (cq/with-terms "field" "term")
-           {:query "field : term"})))
+    (is (= {:query "field : term"}
+           (cq/with-terms "field" "term"))))
   (testing "terms"
-    (is (= (cq/with-terms "field" "termA" "termB")
-           {:query "field : (termA termB)"})))
+    (is (= {:query "field : (termA, termB)"}
+           (cq/with-terms "field" "termA" "termB"))))
   )
 
 (deftest about-with-strings
   (testing "single string"
-    (is (= (cq/with-strings "field" "string")
-           {:query "field : \"string\""})))
+    (is (= {:query "field : \"string\""}
+           (cq/with-strings "field" "string"))))
   (testing "strings"
-    (is (= (cq/with-strings "field" "stringA" "stringB")
-           {:query "field : (\"stringA\" \"stringB\")"})))
+    (is (= {:query "field : (\"stringA\", \"stringB\")"}
+           (cq/with-strings "field" "stringA" "stringB"))))
   )
 
 (deftest about-with-and

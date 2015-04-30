@@ -7,12 +7,12 @@
    {:query (str field " : \"" string "\"")})
 
   ([field string & strings]
-   {:query (str field " : (" (reduce str (interpose " " (map #(str "\"" % "\"") (conj strings string)))) ")")})
+   {:query (str field " : (" (reduce str (interpose ", " (map #(str "\"" % "\"") (conj strings string)))) ")")})
   )
 
 (defn with-terms
   ([field term] {:query (str field " : " term)})
-  ([field term & terms] {:query (str field " : (" (reduce str (interpose " " (conj terms term))) ")")})
+  ([field term & terms] {:query (str field " : (" (reduce str (interpose ", " (conj terms term))) ")")})
   )
 
 (defn with-number-range [field from-kw from to-kw to]
