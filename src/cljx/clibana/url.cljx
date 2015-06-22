@@ -51,5 +51,10 @@
 
     (str host "/#/dashboard/" id (str "?_g=("
                                       refresh
-                                      "," time ")") (str "&_a=(" query "," title ")"))
+                                      (and refresh ",")
+                                      time ")")
+         (str "&_a=("
+              query
+              (and title ",")
+              title ")"))
     ))
