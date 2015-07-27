@@ -151,7 +151,7 @@
   (let [description (cic/<-description decorations)
         options (cic/<-options decorations)
         visualization (cic/<-visualization decorations)
-        search (cic/<-search decorations)
+        search (or (cic/<-search decorations) (cic/<-saved-search decorations))
         encode-json? (get options :encode-json? true)
         vis-doc (atom {:title                 title
                        ;; If there is no description given, empty string is used
