@@ -145,13 +145,21 @@
   (apply civ/markdown decorations))
 
 
+(defn- asearch [search]
+  (if search
+    #+clj (json/write-str search)
+    #+cljs (json/serialize (clj->js search))
+    #+clj (json/write-str {:filter []})
+    #+cljs (json/serialize (clj->js {:filter []}))
+    ))
+
 (defn visualization
   "Construct document describing visualization"
   [title & decorations]
   (let [description (cic/<-description decorations)
         options (cic/<-options decorations)
         visualization (cic/<-visualization decorations)
-        search (or (cic/<-search decorations) (cic/<-saved-search decorations))
+        search (cic/<-search decorations)
         encode-json? (get options :encode-json? true)
         vis-doc (atom {:title                 title
                        ;; If there is no description given, empty string is used
@@ -162,8 +170,7 @@
                                                 #+cljs (json/serialize (clj->js visualization))
                                                 visualization)
                        :kibanaSavedObjectMeta {:searchSourceJSON (if encode-json?
-                                                                   #+clj (json/write-str search)
-                                                                   #+cljs (json/serialize (clj->js search))
+                                                                   (asearch search)
                                                                    search)}
                        })]
 
