@@ -43,7 +43,7 @@
                ")&"
                "_a=("
                "query:(query_string:(query:'field%20%3A%20%22all%22')),"
-               "title:A%20Title"
+               "title:'A%20Title'"
                ")")
           (cu/dashboard-url
             ;(cu/with-options :encode-json? false)

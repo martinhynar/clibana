@@ -33,7 +33,7 @@
 
 
 (defn with-title
-  [title] {:title (str "title:" (url-encode title))})
+  [title] {:title (str "title:'" (url-encode title) "'")})
 
 (defn with-query
   [query] {:query (str "query:(query_string:(query:'" (url-encode (:query query)) "'))")})

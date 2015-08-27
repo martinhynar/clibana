@@ -35,7 +35,17 @@
   [search] {:saved-search (get-document-id search)})
 
 (defn with-search
-  "Use in-place created search."
+  "
+  Use in-place created search.
+
+  Parameters:
+  + index
+   Name of the index-pattern that the query will be executed on.
+   Note that the index pattern shall exists.
+
+  + decorations
+   Calls of (with-...) functions that decorate the search further.
+  "
   [index & decorations]
   (let [query (cic/<-query decorations)]
     {:search {:index  index
@@ -45,7 +55,11 @@
 
 ;;; AGGREGATIONS
 
-(defn aggregation-terms [field & options]
+(defn aggregation-terms
+  "
+  Construct aggregation using terms.
+  "
+  [field & options]
   (let [options (apply hash-map options)]
     {:aggregation-x {:type   "terms"
                      :schema (get options :schema "group")
