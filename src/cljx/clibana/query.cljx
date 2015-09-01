@@ -15,6 +15,9 @@
   ([field term & terms] {:query (str field " : (" (reduce str (interpose ", " (conj terms term))) ")")})
   )
 
+(defn with-query
+  [query-string] {:query query-string})
+
 (defn with-number-range [field from-kw from to-kw to]
   (if (and (number? from) (number? to))
     {:query (str field " : "

@@ -25,6 +25,15 @@
            (cq/with-strings "field" "stringA" "stringB"))))
   )
 
+(deftest about-query
+  (testing "single string"
+    (is (= {:query "string"}
+           (cq/with-query "string"))))
+  (testing "star"
+    (is (= {:query "*"}
+           (cq/with-query "*"))))
+  )
+
 (deftest about-with-and
   (testing "2 queries"
     (is (= {:query "Q1 AND Q2"}
