@@ -91,3 +91,82 @@
 
   )
 
+(deftest about-with-missing
+  (testing "single field"
+    (is (= {:query "_missing_ : field"}
+           (cq/with-missing "field"))))
+  (testing "multiple fields"
+    (is (= {:query "_missing_ : f1 AND _missing_ : f2 AND _missing_ : f3"}
+           (cq/with-missing "f1" "f2" "f3"))))
+  )
+
+(deftest about-with-existing
+  (testing "single field"
+    (is (= {:query "_exists_ : field"}
+           (cq/with-existing "field"))))
+  (testing "multiple fields"
+    (is (= {:query "_exists_ : f1 AND _exists_ : f2 AND _exists_ : f3"}
+           (cq/with-existing "f1" "f2" "f3"))))
+  )
+
+(deftest about-with-regexp
+  (testing "field - no special characters"
+    (is (= {:query "field : /a regexp/"}
+           (cq/with-regexp "field" "a regexp"))))
+  (testing "field - specials"
+    (is (= {:query "field : /a.regexp/"}
+           (cq/with-regexp "field" "a.regexp")))
+
+    (is (= {:query "field : /a?regexp/"}
+           (cq/with-regexp "field" "a?regexp")))
+
+    (is (= {:query "field : /a+regexp/"}
+           (cq/with-regexp "field" "a+regexp")))
+
+    (is (= {:query "field : /a*regexp/"}
+           (cq/with-regexp "field" "a*regexp")))
+
+    (is (= {:query "field : /a|regexp/"}
+           (cq/with-regexp "field" "a|regexp")))
+
+    (is (= {:query "field : /a{regexp/"}
+           (cq/with-regexp "field" "a{regexp")))
+
+    (is (= {:query "field : /a}regexp/"}
+           (cq/with-regexp "field" "a}regexp")))
+
+    (is (= {:query "field : /a[regexp/"}
+           (cq/with-regexp "field" "a[regexp")))
+
+    (is (= {:query "field : /a]regexp/"}
+           (cq/with-regexp "field" "a]regexp")))
+
+    (is (= {:query "field : /a(regexp/"}
+           (cq/with-regexp "field" "a(regexp")))
+
+    (is (= {:query "field : /a)regexp/"}
+           (cq/with-regexp "field" "a)regexp")))
+
+    (is (= {:query "field : /a\"regexp/"}
+           (cq/with-regexp "field" "a\"regexp")))
+
+    (is (= {:query "field : /a\regexp/"}
+           (cq/with-regexp "field" "a\regexp")))
+
+    (is (= {:query "field : /a#regexp/"}
+           (cq/with-regexp "field" "a#regexp")))
+
+    (is (= {:query "field : /a@regexp/"}
+           (cq/with-regexp "field" "a@regexp")))
+
+    (is (= {:query "field : /a&regexp/"}
+           (cq/with-regexp "field" "a&regexp")))
+
+    (is (= {:query "field : /a<regexp/"}
+           (cq/with-regexp "field" "a<regexp")))
+
+    (is (= {:query "field : /a>regexp/"}
+           (cq/with-regexp "field" "a>regexp")))
+
+    (is (= {:query "field : /a~regexp/"}
+           (cq/with-regexp "field" "a~regexp")))))

@@ -47,3 +47,21 @@
   "Constructs queries of the form q1 OR q2 ..."
   [query1 query2 & queries]
   {:query (apply str (interpose " OR " (into [(:query query1) (:query query2)] (map :query queries))))})
+
+(defn with-existing
+  "Create query that checks whether field is present in the document.
+  https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#_field_names"
+  ([field] {:query (str "_exists_ : " field)})
+  ([field & fields] (apply with-and (with-existing field) (map with-existing fields))))
+
+(defn with-missing
+  "Create query that checks whether field is missing in the document.
+  https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#_field_names"
+  ([field] {:query (str "_missing_ : " field)})
+  ([field & fields] (apply with-and (with-missing field) (map with-missing fields))))
+
+(defn with-regexp
+  "Create query with regular expression on given field.
+  https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#_regular_expressions"
+  [field regexp]
+  {:query (str field " : " "/" regexp "/")})
