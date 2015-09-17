@@ -5,7 +5,6 @@
     #+cljs [goog.json :as json]
     ))
 
-
 ;; OPTIONS
 (defn with-options
   "Specify sequence of options to drive shape of the result document."
@@ -45,10 +44,18 @@
 
 
 ;; Couple of usefull positioning and sizing aliases
-(defn half-screen-wide
-  ([height] (with-size 6 height))
-  ([] (half-screen-wide 3))
-  )
+(let [default-height 3
+      default-width 6]
+  (defn half-screen-wide
+    ([height] (with-size default-width height))
+    ([] (half-screen-wide default-height))
+    ))
+(let [default-height 3
+      max-width 12]
+  (defn full-screen-wide
+    ([height] (with-size max-width height))
+    ([] (full-screen-wide default-height))
+    ))
 
 (defn is-panel? [decoration]
   (let [decoration (select-keys decoration [:col :row :size_x :size_y :id :type])]
