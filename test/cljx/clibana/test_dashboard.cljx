@@ -80,4 +80,26 @@
            {:size_x 12 :size_y 3})))
   (testing "Full width"
     (is (= (cd/full-screen-wide 5)
-           {:size_x 12 :size_y 5}))))
+           {:size_x 12 :size_y 5})))
+
+  (testing "Half width default"
+    (is (= (cd/half-screen-wide)
+           {:size_x 6 :size_y 3})))
+  (testing "Half width"
+    (is (= (cd/half-screen-wide 5)
+           {:size_x 6 :size_y 5})))
+
+  (testing "Third width default"
+    (is (= (cd/third-screen-wide)
+           {:size_x 4 :size_y 3})))
+  (testing "Third width"
+    (is (= (cd/third-screen-wide 5)
+           {:size_x 4 :size_y 5})))
+
+  (testing "Quarter width default"
+    (is (= (cd/quarter-screen-wide)
+           {:size_x 3 :size_y 3})))
+  (testing "Quarter width"
+    (is (= (cd/quarter-screen-wide 5)
+           {:size_x 3 :size_y 5})))
+  )
