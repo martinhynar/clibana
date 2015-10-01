@@ -1,5 +1,5 @@
 (defproject
-  clibana "0.1.5"
+  clibana "0.1.6"
 
   :description "A Clojure based generator for Kibana 4 objects."
 
