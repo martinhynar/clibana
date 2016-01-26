@@ -1,5 +1,9 @@
-# clibana [![Build Status](https://travis-ci.org/martinhynar/clibana.svg)](https://travis-ci.org/martinhynar/clibana/builds)
+# clibana
 A Clojure based generator for Kibana 4 objects.
+
+#### Continuous integration
+[![Build Status](https://travis-ci.org/martinhynar/clibana.svg)](https://travis-ci.org/martinhynar/clibana/builds)
+[![Dependencies Status](https://jarkeeper.com/martinhynar/clibana/status.svg)](https://jarkeeper.com/martinhynar/clibana)
 
 #### Latest version
 [![Clojars Project](http://clojars.org/clibana/latest-version.svg)](http://clojars.org/clibana)
