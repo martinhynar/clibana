@@ -21,6 +21,20 @@
         timefield "timefield"]
     (is (= {:title         pattern
             :timeFieldName "timefield"
-            :customFormats "{}"}
+            :customFormats "{}"
+            :fields "[]"}
            (ci/index-pattern pattern timefield))))
   )
+
+(deftest index-pattern-with-typed-field
+  (let [pattern "pattern"
+        timefield "timefield"
+        field-name "str_field"]
+    (is (= {:title         pattern
+            :timeFieldName "timefield"
+            :customFormats "{}"
+            :fields        "[{\"name\":\"str_field\",\"type\":\"string\",\"scripted\":false,\"indexed\":false,\"analyzed\":false,\"doc_values\":true}]"}
+           (ci/index-pattern pattern timefield
+                             (ci/with-string-field field-name)))))
+  )
+
