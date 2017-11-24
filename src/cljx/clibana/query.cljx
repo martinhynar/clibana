@@ -12,7 +12,7 @@
 
 (defn with-terms
   ([field term] {:query (str field " : " term)})
-  ([field term & terms] {:query (str field " : (" (reduce str (interpose ", " (conj terms term))) ")")})
+  ([field term & terms] {:query (str field " : (" (reduce str (interpose " " (conj terms term))) ")")})
   )
 
 (defn with-query

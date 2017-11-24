@@ -45,6 +45,18 @@
 
 ;; Couple of usefull positioning and sizing aliases
 (let [default-height 3
+      default-width 3]
+  (defn quarter-screen-wide
+    ([height] (with-size default-width height))
+    ([] (quarter-screen-wide default-height))
+    ))
+(let [default-height 3
+      default-width 4]
+  (defn third-screen-wide
+    ([height] (with-size default-width height))
+    ([] (third-screen-wide default-height))
+    ))
+(let [default-height 3
       default-width 6]
   (defn half-screen-wide
     ([height] (with-size default-width height))

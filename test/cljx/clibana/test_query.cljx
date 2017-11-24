@@ -12,7 +12,7 @@
     (is (= {:query "field : term"}
            (cq/with-terms "field" "term"))))
   (testing "terms"
-    (is (= {:query "field : (termA, termB)"}
+    (is (= {:query "field : (termA termB)"}
            (cq/with-terms "field" "termA" "termB"))))
   )
 
